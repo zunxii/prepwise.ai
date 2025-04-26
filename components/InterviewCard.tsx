@@ -1,13 +1,17 @@
 import React from 'react'
 import dayjs from 'dayjs'
 import Image from 'next/image'
-import { getRandomInterviewCover } from '@/lib/utils'
+import { getTechLogos } from '@/lib/utils'
 import { Button } from './ui/button'
 import Link from 'next/link'
 import DisplayTech from './DisplayTech'
+import { getFeedbackByInterviewId } from '@/lib/actions/general.action'
 
-const InterviewCard = ({interviewId, userId, role, type, techstack, createdAt} : InterviewCardProps) => {
-    const feedback = null as Feedback | null
+const InterviewCard = async ({id, userId, role, type, techstack, createdAt} : InterviewCardProps) => {
+    const techIcons = await getTechLogos(techstack);
+    const url = techIcons[0].url;
+    console.log(url)
+    const feedback = userId && id ? await getFeedbackByInterviewId({interviewId : id, userId}) : null;
     const normalizedType = /mix/gi.test(type) ? "Mixed" : type
     const formattedDate = dayjs(feedback?.createdAt || createdAt || Date.now()).format("DD/MM/YYYY")
   return (
@@ -18,7 +22,7 @@ const InterviewCard = ({interviewId, userId, role, type, techstack, createdAt} :
                 <p className='badge-text'>{normalizedType}</p>
             </div>
             <Image
-                src={getRandomInterviewCover()}
+                src={url}
                 alt='cover'
                 width={90}
                 height={90}
@@ -54,7 +58,7 @@ const InterviewCard = ({interviewId, userId, role, type, techstack, createdAt} :
         <div className='flex flex-row justify-between '>
             <DisplayTech  techStack={techstack}/>
             <Button className='btn-primary'>
-                <Link href={feedback? `interview/${interviewId}/feedback` : `/interview/${interviewId}`}>
+                <Link href={feedback? `interview/${id}/feedback` : `/interview/${id}`}>
                     {feedback ? "View Feedback" : "View Interview"}
                 </Link>
             </Button>

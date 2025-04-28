@@ -53,7 +53,7 @@ const page = async () => {
         <h2>Take an Interview</h2>
         <div className='interviews-section'>
           {
-            hasUpcomingInterviews ? userInterviews.map((interview) => (
+            hasUpcomingInterviews ? latestInterviews.map((interview) => (
               <InterviewCard {...interview} key={interview.id}/>
             )) : (
               <div className='flex flex-col gap-4'>
